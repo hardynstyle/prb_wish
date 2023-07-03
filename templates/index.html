@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WISPER</title>
+</head>
+<body>
+    <h1>PROBANDO SERVIDORES REMOTOS DE WISPER</h1>
+    <p>Welcome to my Flask web application!</p>
+    <p>{{ message }}</p>
+    <button onclick="callBackend()">Click me</button>
+    <button id="btnDescargar">Descargar archivo</button>
+    <script>
+        function callBackend() {
+            fetch('/backend', {method: 'POST'})
+                .then(response => response.text())
+                .then(result => alert(result))
+                .catch(error => console.log(error));
+        }
+
+
+   
+        document.getElementById('btnDescargar').addEventListener('click', function() {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var rutaArchivo = xhr.responseText;
+                
+                descargarArchivo(rutaArchivo);
+            }
+        };
+
+        xhr.open('GET', '/obtener_ruta_archivo', true);
+        xhr.send();
+    });
+
+    function descargarArchivo(rutaArchivo) {
+        var enlaceTemporal = document.createElement('a');
+        enlaceTemporal.href = rutaArchivo;
+        var nombreArchivo = rutaArchivo.split('/').pop();
+        enlaceTemporal.download = nombreArchivo;
+        enlaceTemporal.target = '_blank';
+
+        document.body.appendChild(enlaceTemporal);
+        enlaceTemporal.click();
+        document.body.removeChild(enlaceTemporal);
+    }
+
+    </script>
+</body>
+</html>
